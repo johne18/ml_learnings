@@ -5,5 +5,6 @@ After reading my statistics book, I decided to continue my learning journey thro
   - Visualizations and analyses
   - What I've learned and additional analyses
 
-Feel free to message or connect with me on LinkedIn too:
+Feel free to message or connect with me on LinkedIn:
+
 https://www.linkedin.com/in/jsanti28/

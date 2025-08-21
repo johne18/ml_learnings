@@ -6,3 +6,4 @@ scipy
 tensorflow
 seaborn
 datasets
+emoji

@@ -1,0 +1,18 @@
+EDA
+
+Clean the data
+ simplify multilabel to binary toxic label ✅
+ Clean up special characters (emojis, special characters like newlines) ✅
+
+Class Imbalance
+ Check distribution:
+ toxic vs non-toxic✅
+
+Text Characteristics
+ Word count / length distribution ✅
+ Most common words per class (e.g., toxic vs non-toxic) ✅
+ N-gram analysis
+
+Visualizations
+ Word clouds or bar plots for word frequency
+ Heatmap of label co-occurrence (optional)

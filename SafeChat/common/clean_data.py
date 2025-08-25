@@ -1,18 +1,30 @@
 import emoji
+
 import nltk
 from nltk.corpus import stopwords
+from nltk.util import ngrams
+from nltk.tokenize import word_tokenize
 
 
 def contains_emoji(text):
     return bool(emoji.emoji_count(text))
 
 
-def remove_emoji(text):
-    return emoji.replace_emoji(text, replace='')
+def generate_grams(text, n):
+    nltk.download('punkt_tab', quiet=True)
+    # Tokenize the text
+    tokens = word_tokenize(text)
+    # Create n-grams
+    n_grams = list(ngrams(tokens, n))
+    return n_grams
 
 
 def get_stop_words():
-    nltk.download('stopwords')
+    nltk.download('stopwords', quiet=True)
     stop_words = set(stopwords.words('english'))
     stop_words.update(['I', 'You', 'YOU', 'like', 'The'])
     return stop_words
+
+
+def remove_emoji(text):
+    return emoji.replace_emoji(text, replace='')

@@ -21,9 +21,10 @@ def filter_non_standard_words(text):
 
 
 def generate_grams(text, n):
-    nltk.download('punkt_tab', quiet=True)
+    nltk.download('punkt_tab', quiet=True) 
 
-    tokens = word_tokenize(text)
+    # If token is not empty, add to list
+    tokens = [token for token in word_tokenize(text) if token.strip()]
     n_grams = list(ngrams(tokens, n))
 
     return n_grams

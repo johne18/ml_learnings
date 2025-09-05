@@ -16,3 +16,37 @@ Text Characteristics
 Visualizations
  Word clouds or bar plots for word frequency ✅
  Heatmap of label co-occurrence (optional)
+
+Modelling
+ Vectorize (Encoding)
+    turn N-Grams into features for classification
+        CountVectorizer (Bag-of-Words)
+        TfidfVectorizer (Weight of each word based on frequency and uniqueness)
+    Consider using PCA to reduce feature space if it becomes too large
+
+ Models
+     Logistic Regression (Not linear regression)
+     Bernoulli Naive Bayes (Best for toxic or non-toxic)
+     RandomForestClassifier
+     KNeigborsClassifier
+     SVM
+     XGBClassifier
+
+ Evaluate
+     train-test-split data
+     Precision, Recall, F1-score
+     Confusion Matrix(?)
+     Cross-validate
+
+Flow of ML model
+ Vectorize -> Pass vectors into model.predcit() -> classification output
+
+Future Improvements/Learnings
+ BERT/RoBERTa (transformer-based models)
+    Deep Learning
+    captures semantic meanings
+    Embedding
+    Get pretrained model from huggingface
+ Image Classification based off screenshot of texts
+ Spelling correction
+ Regex on obfuscated swearing (s**t)

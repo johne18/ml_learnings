@@ -18,28 +18,94 @@ Visualizations
  Heatmap of label co-occurrence (optional)
 
 Modelling
+
  Vectorize (Encoding)
     turn N-Grams into features for classification
         CountVectorizer (Bag-of-Words)
-        TfidfVectorizer (Weight of each word based on frequency and uniqueness)
+            More for topic Modelling (discover hidden topics in docs)
+                clusters words that tend to appear together
+            Raw counts for word clouds
+        TfidfVectorizer (Weight of each word based on frequency and uniqueness)✅
+            More for classification
+            better generalization
+            reduce impact of common words
+            nice baseline (simple solution)
     Consider using PCA to reduce feature space if it becomes too large
+
+
+ Handle class imbalances
+    First use class_weight='balanced'
+    measure scores
+    Second resample from minority class using SMOTE, using 
+    Pipeline from imblearn
+    measure scores
+
+Types of scores
+    accuracy_score
+        nah
+        more for balanced classes
+        if false positives and negatives have equal counts
+        can be used as a baseline
+
+
+    recALL (for minority class)
+        measures the correct number of classifications based off the imbalanced class
+    preciSIon
+        measures the correct number of classifications out of all observations of one side
+    f1_score
+        calculates the harmonic mean between recall and precision
+    f1_macro
+        calculates the f1_score for each class independently and takes the unweighted mean.
+        ignores class imbalance
+        good when classes are treated equally, regardless of frequency
+    f1_weighted
+        calculates the f1_score for each class then takes the average weighted by the number
+        of true instances for each class
+        accounts for class imbalance
+        better for class imbalnces
+
+
+    confuse_matrix
+        True Positive, False Positive, True Negative, False Positive tables
+        You can set a threshold to create many different confusion matricies
+        Can be built from a Logistic Regression Model
+    roc_auc
+        https://www.youtube.com/watch?v=4jRBRDbJemM&ab_channel=StatQuestwithJoshStarmer
+        evaluate a binary classification model
+        Receiver Operating Charcteristic
+            x-axis = False Positive Rate
+                FP / (FP + TN)
+            y-axis = True Positive Rate
+                TP / (TP + FN)
+            Great way to summarize confusion matricies with different thresholds
+                Plot points on a graph to determine rates
+        Area Under the Curve
+            Helps compare one ROC curve to another
+            The greater the area of an ROC curve, the better
+
 
  Models
      Logistic Regression (Not linear regression)
-     Bernoulli Naive Bayes (Best for toxic or non-toxic)
      RandomForestClassifier
-     KNeigborsClassifier
      SVM
-     XGBClassifier
+     HistGradientBoostingClassifier
+     Bernoulli Naive Bayes (Best for toxic or non-toxic) ?? look into
+
 
  Evaluate
-     train-test-split data
      Precision, Recall, F1-score
      Confusion Matrix(?)
      Cross-validate
 
+
 Flow of ML model
  Vectorize -> Pass vectors into model.predcit() -> classification output
+
+
+Plot Type	            Analogy
+Density Plot	        “What does the shape of my mountain of data look like?” (e.g., skewed, flat, peaked)
+Probability Plot	    “Does my mountain of data look like a specific mountain (like a Normal distribution)?”
+
 
 Future Improvements/Learnings
  BERT/RoBERTa (transformer-based models)
@@ -50,3 +116,5 @@ Future Improvements/Learnings
  Image Classification based off screenshot of texts
  Spelling correction
  Regex on obfuscated swearing (s**t)
+ 
+ 

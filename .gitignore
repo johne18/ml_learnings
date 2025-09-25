@@ -1,4 +1,5 @@
 Lib/
+data/
 __pycache__
 
 pyvenv.cfg

@@ -1,17 +1,22 @@
 from enum import Enum, member
 from functools import partial
+from typing import Optional, Dict, Any
+
+from imblearn.pipeline import Pipeline
+from imblearn.over_sampling import SMOTE
 
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 from sklearn.metrics import classification_report
 
 
 CLASS_WEIGHT_MODELS = {
-    "HistGradientBoostingClassifier": HistGradientBoostingClassifier,
-    "LogisticRegression": LogisticRegression,
-    "LinearSVC": LinearSVC,
+    "gradient_classifier": HistGradientBoostingClassifier,
+    "logistic_regression": LogisticRegression,
+    "linear_svc": LinearSVC,
 }
 
 
@@ -37,7 +42,13 @@ def run_random_forest_model(
 
         predictions = model.predict(x_val)
 
-        scores = classification_report(y_val, predictions, output_dict=True)
+        scores = classification_report(
+            y_val, 
+            predictions, 
+            output_dict=True,
+            labels=[0, 1],
+            target_names=["non_toxic", "toxic"],
+        )
 
         acc_scores.append({
             "num_trees": num_trees,
@@ -57,14 +68,38 @@ def run_class_weight_models(
     acc_scores = []
 
     for name, ModelClass in CLASS_WEIGHT_MODELS.items():
-        model = ModelClass(class_weight=class_weight)
+        model = ModelClass(class_weight=class_weight, random_state=18)
         model.fit(x_train, y_train)
         predictions = model.predict(x_val)
 
-        scores = classification_report(y_val, predictions, output_dict=True)
+        scores = classification_report(
+            y_val, 
+            predictions, 
+            output_dict=True,
+            labels=[0, 1]
+            target_names=["non_toxic", "toxic"],
+        )
         acc_scores.append({
             "model_name":name, 
             "classification_scores": scores
         })
 
     return acc_scores
+
+
+def get_pipelines(model_name,model_params: Optional[Dict[str, Any]] = None):
+    steps = [
+        ("vectorizer", TfidfVectorizer(ngram_range=(2,3))),
+        ("smote", SMOTE(random_state=18)),
+    ]
+
+    if model_name not in CLASS_WEIGHT_MODELS:
+        steps.append(("rf_model", RandomForestClassifier(**model_params)))
+        return Pipeline(steps)
+    else:
+        model_class = CLASS_WEIGHT_MODELS[model_name]
+        model = model_class(**model_params)
+
+        steps.append((model_name, model))
+
+        return Pipeline(steps)

@@ -57,9 +57,9 @@ Types of scores
     f1_macro
         calculates the f1_score for each class independently and takes the unweighted mean.
         ignores class imbalance
-        good when classes are treated equally, regardless of frequency
+        good to treat classes equally, regardless of frequency
     f1_weighted
-        calculates the f1_score for each class then takes the average weighted by the number
+        calculates the f1_score for each class then take the average weighted by the number
         of true instances for each class
         accounts for class imbalance
         better for class imbalnces

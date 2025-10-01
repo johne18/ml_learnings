@@ -20,7 +20,7 @@ Visualizations
 Modelling
 
  Vectorize (Encoding)
-    turn N-Grams into features for classification
+    turn N-Grams into features for classification ✅
         CountVectorizer (Bag-of-Words)
             More for topic Modelling (discover hidden topics in docs)
                 clusters words that tend to appear together
@@ -34,9 +34,10 @@ Modelling
 
 
  Handle class imbalances
-    First use class_weight='balanced'
-    measure scores
-    Second resample from minority class using SMOTE, using 
+    First use class_weight='balanced'✅
+    measure scores✅
+    Second resample from minority class using SMOTE
+        actually used RandomUnderSampler
     Pipeline from imblearn
     measure scores
 

@@ -1,16 +1,14 @@
-from enum import Enum, member
-from functools import partial
 from typing import Optional, Dict, Any
 
 from imblearn.pipeline import Pipeline
-from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
 
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, roc_auc_score
 
 
 CLASS_WEIGHT_MODELS = {
@@ -49,10 +47,15 @@ def run_random_forest_model(
             labels=[0, 1],
             target_names=["non_toxic", "toxic"],
         )
+        auc_score = roc_auc_score(
+            y_val,
+            predictions,
+        )
 
         acc_scores.append({
             "num_trees": num_trees,
-            "classification_scores": scores
+            "classification_scores": scores,
+            "auc_score": auc_score,
         })
 
     return acc_scores
@@ -76,21 +79,27 @@ def run_class_weight_models(
             y_val, 
             predictions, 
             output_dict=True,
-            labels=[0, 1]
+            labels=[0, 1],
             target_names=["non_toxic", "toxic"],
         )
+        auc_score = roc_auc_score(
+            y_val,
+            predictions,
+        )
+
         acc_scores.append({
             "model_name":name, 
-            "classification_scores": scores
+            "classification_scores": scores,
+            "auc_score": auc_score,
         })
 
     return acc_scores
 
 
-def get_pipelines(model_name,model_params: Optional[Dict[str, Any]] = None):
+def get_pipelines(model_name, sampling_strategy=1.0, model_params: Optional[Dict[str, Any]] = None):
     steps = [
         ("vectorizer", TfidfVectorizer(ngram_range=(2,3))),
-        ("smote", SMOTE(random_state=18)),
+        ("smote", RandomUnderSampler(sampling_strategy=sampling_strategy, random_state=18)),
     ]
 
     if model_name not in CLASS_WEIGHT_MODELS:

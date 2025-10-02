@@ -1,12 +1,13 @@
 from typing import Optional, Dict, Any
 
+from sklearn.feature_extraction.text import TfidfVectorizer
 from imblearn.pipeline import Pipeline
 from imblearn.under_sampling import RandomUnderSampler
 
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.svm import LinearSVC
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 from sklearn.metrics import classification_report, roc_auc_score
 
@@ -47,7 +48,7 @@ def run_random_forest_model(
             labels=[0, 1],
             target_names=["non_toxic", "toxic"],
         )
-        auc_score = roc_auc_score(
+        rocauc_score = roc_auc_score(
             y_val,
             predictions,
         )
@@ -55,7 +56,7 @@ def run_random_forest_model(
         acc_scores.append({
             "num_trees": num_trees,
             "classification_scores": scores,
-            "auc_score": auc_score,
+            "roc_auc_score": rocauc_score,
         })
 
     return acc_scores
@@ -82,7 +83,7 @@ def run_class_weight_models(
             labels=[0, 1],
             target_names=["non_toxic", "toxic"],
         )
-        auc_score = roc_auc_score(
+        rocauc_score = roc_auc_score(
             y_val,
             predictions,
         )
@@ -90,22 +91,30 @@ def run_class_weight_models(
         acc_scores.append({
             "model_name":name, 
             "classification_scores": scores,
-            "auc_score": auc_score,
+            "roc_auc_score": rocauc_score,
         })
 
     return acc_scores
 
 
 def get_pipelines(model_name, sampling_strategy=1.0, model_params: Optional[Dict[str, Any]] = None):
+    vectorizer = TfidfVectorizer(
+            ngram_range=(2,3),
+            max_features=5000,
+            max_df=0.7,
+            stop_words='english'
+        )
     steps = [
-        ("vectorizer", TfidfVectorizer(ngram_range=(2,3))),
-        ("smote", RandomUnderSampler(sampling_strategy=sampling_strategy, random_state=18)),
+        ("tfidf", vectorizer),
+        ("under_sampler", RandomUnderSampler(sampling_strategy=sampling_strategy, random_state=18)),
     ]
 
     if model_name not in CLASS_WEIGHT_MODELS:
         steps.append(("rf_model", RandomForestClassifier(**model_params)))
         return Pipeline(steps)
     else:
+        steps.append(("toarray", FunctionTransformer(lambda x: x.toarray(), accept_sparse=True)))
+
         model_class = CLASS_WEIGHT_MODELS[model_name]
         model = model_class(**model_params)
 
